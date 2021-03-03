@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset=utf-8 />
+	<title>Map Template Browser Title</title>
+	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css" />
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
+
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			background: "whitesmoke";
+			font-family: "Noto Sans", sans-serif;
+			color: #3d3d3d;
+		}
+
+		h1 {
+			position: absolute;
+			margin-top: 0;
+			top: 10px;
+			left: 45px;
+			font-size: 2em;
+			font-family: "Lora", serif;
+			letter-spacing: .04em;
+			padding: 10px 15px;
+			background: rgba(256, 256, 256);
+			border: 1px solid grey;
+			border-radius: 3px;
+			z-index: 800;
+		}
+
+		h2 {
+			font-family: "Lora", serif;
+			letter-spacing: .04em;
+		}
+
+		#map {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			width: 100%;
+		}
+
+		section {
+			position: absolute;
+			bottom: 0;
+			left: 10px;
+			width: 300px;
+			margin: 20px auto;
+			padding: 0 15px;
+			background: rgba(256, 256, 256);
+			border: 1px solid grey;
+			border-radius: 3px;
+			z-index: 800;
+		}
+
+		p {
+			font-size: .9em;
+			line-height: 1.5em;
+		}
+
+		a {
+			color: #005daa;
+			text-decoration: none;
+		}
+
+		a:hover {
+			text-decoration: underline;
+		}
+	</style>
+</head>
+
+<body>
+
+	<h1>The Journey to Class</h1>
+
+	<div id='map'></div>
+
+	<section>
+		<h2>Sunset to Rankin</h2>
+
+		<p>Oh what a lovely day. The birds are chirping and the sun is shining. Today you decide to go for a leisurely walk to class. You open the door and begin your pleasant journey, but soon you are overwhelmed by a rumbling disturbance in the pit of your stomach. You must eat a waffle. Luckily, Waffle House senses your discomfort and launches a waffle, frisbee style, into your mouth. The journey continues, but now you're thirsty. The TApp Room comes into view. You pop in for a quick beer and some small talk. Oh no... you're late for class. Like a bat out of hell you bust through the doors of the bar and kick your legs into gear. An off leash dog at Durham Park smells the waffle residue on your shirt and chases you all the way to your destination. You perform the worlds greatest spin move and leave the dog in the dust. Beads of sweat fall down your face as you reach the classroom door. A sign on the door reads "Class canceled today." With a sigh you turn around and walk back home.</p>
+
+		<p>
+		</p>
+
+		<p><a href="https://www.wafflehouse.com/breakfast-favorites/">Waffle House Menu</a></p>
+		<p><a href="https://www.tapproom.com/menu">TApp Room Menu</a></p>
+		<p>Map created by Luke Bennett</p>
+
+	</section>
+
+	<script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+
+	<script src="data/route.js"></script>
+
+	<script>
+
+//options to be used when creating the map
+		var options = {
+			center: [36.2056000, -81.6673398],
+			zoom: 25
+		}
+
+
+//creation of the Leaflet map
+		var map = L.map('map', options);
+
+//request to load basemap
+var Stadia_AlidadeSmoothDark = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+	maxZoom: 20,
+	attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+//string content to be inserted into a tooltip
+//		var message = 'Sunset Drive!';
+
+//create a Leaflet marker, centered on the map's center.
+//		L.marker(map.getCenter())
+//			.bindTooltip(message) //bind the tooltip and message to the marker
+//			.addTo(map) // add the marker to the map`
+//			.openTooltip(); // open the tooltip
+var myRoute = L.geoJson(data, {
+	filter : function(feature) {
+		if(feature.geometry.type =="LineString") {
+			return feature;
+		}
+	},
+	style : function(feature) {
+
+		return {
+			color: "#EE7802",
+			weight: 8,
+			opacity: 0.8,
+			dashArray: "5, 12"
+		}
+	}
+}).addTo(map);
+
+var myStops = L.geoJson(data, {
+	filter : function(feature){
+		if(feature.geometry.type == "Point") {
+			return feature;
+		}
+	},
+	onEachFeature : function(feature, layer) {
+		layer.bindTooltip(feature.properties['name']);
+		layer.bindTooltip(feature.properties['Name']);
+	}
+	}).addTo(map);
+map.fitBounds(myRoute.getBounds());
+
+	</script>
+
+</body>
+
+</html>
