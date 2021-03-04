@@ -1,4 +1,4 @@
-###### Lab 3: Creating an Interactive Web Map
+#### Lab 3: Creating an Interactive Web Map
 
 <p> This lab involved manipulating code within an HTML document composed of HTML, CSS, and JavaScript to produce an interactive web map.
 
